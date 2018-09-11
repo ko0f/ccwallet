@@ -67,6 +67,9 @@ module.exports = class Ethereum extends Blockchain {
 
       txs.forEach( tx => {
          let symbol = tx['tokenSymbol'];
+         if (symbol && !symbol.length)
+            // example https://etherscan.io/tx/0x6a325d69f82a6c4d69024d5f104e4476821a1e96ec341ba038696a0f76f05709
+            symbol = 'ERC20';
          if (symbol && symbol.length) {
             let dir = tx.to.toLowerCase() === bcAddress.toLowerCase() ? 1 : -1;
             let decimal = parseInt(tx['tokenDecimal']);
@@ -87,7 +90,7 @@ module.exports = class Ethereum extends Blockchain {
                balance.amount += value;
             }
          } else
-            console.log(`ccwallet | Ignoring token transaction without symbol, contractAddress = ${tx['contractAddress']}`);
+            console.log(`ccwallet | Ignoring token transaction without symbol, txhash ${tx['hash']}, contractAddress ${tx['contractAddress']}`);
       });
 
       return balances;
