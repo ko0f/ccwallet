@@ -20,5 +20,9 @@
   "bugs": {
     "url": "https://github.com/ko0f/ccwallet/issues"
   },
-  "homepage": "https://github.com/ko0f/ccwallet#readme"
+  "homepage": "https://github.com/ko0f/ccwallet#readme",
+  "dependencies": {
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2"
+  }
 }
