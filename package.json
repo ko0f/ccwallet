@@ -1,0 +1,24 @@
+{
+  "name": "ccwallet",
+  "version": "1.0.0",
+  "description": "CryptoCurrency Wallet API Library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ko0f/ccwallet.git"
+  },
+  "keywords": [
+    "cryptocurrency",
+    "wallet",
+    "blockchain"
+  ],
+  "author": "ko0f",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ko0f/ccwallet/issues"
+  },
+  "homepage": "https://github.com/ko0f/ccwallet#readme"
+}
