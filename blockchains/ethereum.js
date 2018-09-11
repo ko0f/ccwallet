@@ -23,6 +23,8 @@ module.exports = class Ethereum extends Blockchain {
    }
 
    async getBalance (bcAddress) {
+      let balances = {};
+
       // tokens ---------------------------
       let response = await request( this.tokenTxUrl(bcAddress) )
          .catch ( err => {throw err} );
@@ -32,10 +34,9 @@ module.exports = class Ethereum extends Blockchain {
          throw new Error(`Failed parsing etherscan.io response, parsed object is null`);
       if (!responseObj.status)
          throw new Error(`Failed getting wallet balance from etherscan.io, response status is ${responseObj.status}`);
-      if (!responseObj.result || !responseObj.result.length)
-         return {balances: {}, tokens: {}};
 
-      let balances = this.aggregateTokenTxs(responseObj.result, bcAddress);
+      if (responseObj.result && responseObj.result.length)
+         this.aggregateTokenTxs(responseObj.result, bcAddress);
 
       // eth ---------------------------
       response = await request( this.accountBalanceUrl(bcAddress) )
