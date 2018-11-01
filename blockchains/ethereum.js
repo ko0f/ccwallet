@@ -36,7 +36,7 @@ module.exports = class Ethereum extends Blockchain {
          throw new Error(`Failed getting wallet balance from etherscan.io, response status is ${responseObj.status}`);
 
       if (responseObj.result && responseObj.result.length)
-         this.aggregateTokenTxs(responseObj.result, bcAddress);
+         balances = this.aggregateTokenTxs(responseObj.result, bcAddress);
 
       // eth ---------------------------
       response = await request( this.accountBalanceUrl(bcAddress) )
