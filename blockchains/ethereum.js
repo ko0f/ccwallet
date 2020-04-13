@@ -8,10 +8,18 @@ module.exports = class Ethereum extends Blockchain {
 
    constructor () {
       super();
-      this.rootCurrency = {
-         symbol: `ETH`,
-         name: `Ethereum`,
-      };
+   }
+
+   getSymbol() {
+      return 'ETH';
+   }
+
+   getName() {
+      return 'Ethereum';
+   }
+
+   parseHashFromLink(link) {
+      return null;
    }
 
    tokenTxUrl (bcAddress) {
@@ -54,10 +62,10 @@ module.exports = class Ethereum extends Blockchain {
       if (typeof responseObj.result !== 'number')
          throw new Error(`Failed getting wallet balance from etherscan.io, unexpected result object type ${typeof responseObj.result}`);
 
-      balances[this.rootCurrency.symbol] = {
+      balances[this.getSymbol()] = {
          amount: responseObj.result / Math.pow(10, 18),
-         name: this.rootCurrency.name,
-         symbol: this.rootCurrency.symbol,
+         name: this.getName(),
+         symbol: this.getSymbol(),
       };
 
       return Object.values (balances);
