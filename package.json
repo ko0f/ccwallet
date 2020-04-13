@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/ko0f/ccwallet#readme",
   "dependencies": {
+    "moment": "^2.24.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.2"
   }
