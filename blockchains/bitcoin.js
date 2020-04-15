@@ -23,7 +23,17 @@ module.exports = class Bitcoin extends Blockchain {
          if (pos !== -1)
             return link.substr(pos + tag.length);
       }
-      return tryparse('blockstream.info/tx/');
+      return
+         tryparse('blockstream.info/tx/')
+         || tryparse('blockchain.com/btc/tx/')
+         || tryparse('btc.com/')
+         || tryparse('live.blockcypher.com/btc/tx/')
+         || tryparse('explorer.bitcoin.com/btc/tx/')
+         || tryparse('blockchair.com/bitcoin/transaction/')
+         || tryparse('sochain.com/tx/BTC/')
+         || tryparse('bitaps.com/')
+         || tryparse('blockchain.info/btc/tx/')
+         ;
    }
 
    getAccountBalanceUrl(bcAddress) {
