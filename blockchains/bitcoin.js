@@ -18,13 +18,12 @@ module.exports = class Bitcoin extends Blockchain {
    }
 
    parseHashFromLink(link) {
-      let tryparse = (tag) => {
+      const tryparse = (tag) => {
          let pos = link.indexOf(tag);
          if (pos !== -1)
             return link.substr(pos + tag.length);
       }
-      return
-         tryparse('blockstream.info/tx/')
+      return tryparse('blockstream.info/tx/')
          || tryparse('blockchain.com/btc/tx/')
          || tryparse('btc.com/')
          || tryparse('live.blockcypher.com/btc/tx/')
@@ -55,7 +54,7 @@ module.exports = class Bitcoin extends Blockchain {
          console.log(`blockcypher.com JSON returned: ${rawtx}`);
          throw new Error(`Failed reading TX from blockcypher.com, bad JSON returned: ${e.message}`);
       }
-      let amount = rawtx['outputs'] && rawtx['outputs'].reduce( (sum, v) => v['spent_by'] ? sum + v['value'] / 100000000 : sum, 0) || 0;
+      let amount = rawtx['outputs'] && rawtx['outputs'].reduce( (sum, v) => sum + v['value'] / 100000000, 0) || 0;
       let tx = {
          hash: rawtx['hash'],
          timestamp: +moment(rawtx['confirmed']),
