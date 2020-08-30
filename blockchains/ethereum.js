@@ -1,5 +1,6 @@
 
 const Blockchain = require ('./base/Blockchain')
+    , moment = require('moment')
     , request = require('request-promise');
 
 const etherscanioApiKey = 'X3Y9VC9AB4INQBVM1IKRRJ7J6APAU4Y9QB';
@@ -19,7 +20,12 @@ module.exports = class Ethereum extends Blockchain {
    }
 
    parseHashFromLink(link) {
-      return null;
+      const tryparse = (tag) => {
+         let pos = link.indexOf(tag);
+         if (pos !== -1)
+            return link.substr(pos + tag.length);
+      }
+      return tryparse('etherscan.io/tx/');
    }
 
    tokenTxUrl (bcAddress) {
@@ -28,6 +34,14 @@ module.exports = class Ethereum extends Blockchain {
 
    accountBalanceUrl (bcAddress) {
       return `https://api.etherscan.io/api?module=account&action=balance&address=${bcAddress}&startblock=0&endblock=999999999&sort=asc&apikey=${etherscanioApiKey}`;
+   }
+
+   getReadTxUrl(hash) {
+      return `https://api.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash=${hash}&apikey=${etherscanioApiKey}`;
+   }
+
+   getBlockByNumberUrl(hash) {
+      return `https://api.etherscan.io/api?module=proxy&action=eth_getBlockByNumber&tag=${hash}&boolean=true&apikey=${etherscanioApiKey}`;
    }
 
    async getBalance (bcAddress) {
@@ -105,4 +119,41 @@ module.exports = class Ethereum extends Blockchain {
       return balances;
    }
 
+   async readTx(hash) {
+      let response = await request( this.getReadTxUrl(hash) )
+          .catch ( err => {throw err} );
+
+      let rawtx;
+      try {
+         rawtx = JSON.parse(response)
+      } catch (e) {
+         console.log(`blockcypher.com JSON returned: ${rawtx}`);
+         throw new Error(`Failed reading TX from blockcypher.com, bad JSON returned: ${e.message}`);
+      }
+      const amount = parseInt(rawtx['result']['value'], 16) / Math.pow(10, 18);
+      const fee = parseInt(rawtx['result']['gas'], 16) * parseInt(rawtx['result']['gasPrice'], 16) / Math.pow(10, 18);
+
+      response = await request( this.getBlockByNumberUrl(rawtx['result']['blockNumber']) )
+          .catch ( err => {throw err} );
+
+      let rawblock;
+      try {
+         rawblock = JSON.parse(response)
+      } catch (e) {
+         console.log(`etherscan JSON returned: ${rawblock}`);
+         throw new Error(`Failed reading TX from etherscan.io, bad JSON returned: ${e.message}`);
+      }
+      const timestamp = parseInt(rawblock['result']['timestamp'], 16) * 1000;
+
+      let tx = {
+         hash,
+         timestamp,
+         fee,
+         amount,
+         symbol: this.getSymbol(),
+         currencyName: this.getName(),
+      }
+
+      return tx;
+   }
 };
